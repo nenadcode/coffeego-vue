@@ -1,23 +1,26 @@
 <template>
   <div id="app">
-    <ul>
+    <ul v-if="venues && venues.length">
       <div class="card" v-for="venue in venues">
-        <template v-for="specificVenue in allVenues">
-          <div class="card__photo-container">
-          </div>
-          <div class="card__info-container">
-            <div class="card__info-container__name-rating-container">
-              <h1>{{ venue.name }}</h1>
-              <div class="card__info-container__rating-container">
-                <p>{{ specificVenue.rating }}</p>
-              </div>
+        <div class="card__photo-container">
+        </div>
+        <div class="card__info-container">
+          <div class="card__info-container__name-rating-container">
+            <h1>{{ venue.name }}</h1>
+            <div class="card__info-container__rating-container">
+              <p>{{ allVenues }}</p>
             </div>
-            <p class="card__info-container__address">{{ venue.location.address }}, {{ venue.location.city }}</p>
-            <p class="card__info-container__coffee-cold warning"></p>
           </div>
-        </template>
+          <p class="card__info-container__address" v-if="venue.location.address">{{ venue.location.address }}, {{ venue.location.city }}</p>
+          <p class="card__info-container__address" v-else>Address not available</p>
+          <p class="card__info-container__coffee-cold warning"></p>
+        </div>
       </div>
     </ul>
+
+    <div v-if="error && error.length">
+      <p>{{ error }}</p>
+    </div>
   </div>
 </template>
 
@@ -30,7 +33,8 @@
       return {
         venues: '',
         place: '',
-        allVenues: ''
+        allVenues: '',
+        error: ''
       }
     },
     created() {
@@ -43,26 +47,32 @@
         })
       },
       getPositionApproved() {
+        let vm = this
         this.getPosition()
           .then((position) => {
             let lat = position.coords.latitude,
               lng = position.coords.longitude
               axios.get('https://api.foursquare.com/v2/venues/search?categoryId=4bf58dd8d48988d1e0931735&v=20131016&ll=' + lat + ',' + lng + '&radius=1000&client_id=O4N5MBHQWS11LRWBBO15JTZWFC42WKSUKTQYMXJ1ZN1CIPXD&client_secret=X1043GY3LH0W4S54GT0RWL300R2144W5WUVJKQ30GI0O1F03&v=20120609')
                 .then(res => {
-                  this.venues = res.data.response.venues
+                  debugger
+                  vm.venues = res.data.response.venues
 
-                  this.place = this.venues.map(function(place) {
+                  vm.place = vm.venues.map(function(place) {
 
                     let venueID = place.id
 
                     axios.get('https://api.foursquare.com/v2/venues/' + venueID + '/?client_id=O4N5MBHQWS11LRWBBO15JTZWFC42WKSUKTQYMXJ1ZN1CIPXD&client_secret=X1043GY3LH0W4S54GT0RWL300R2144W5WUVJKQ30GI0O1F03&v=20120609')
-                      .then( data => {
+                      .then(data => {
+                        debugger
                         console.log(data)
-                        this.allVenues = data.data.response.venue.rating
-                        console.log(rating)
+                        vm.allVenues = data.data.response.venue.rating
+                        console.log(vm.allVenues)
                       })
                   })
 
+                })
+                .catch(() => {
+                  vm.error = 'Do you want to see where are closest Coffee Shops? Please allow Coffee Go to see your location.'
                 })
 
           })
