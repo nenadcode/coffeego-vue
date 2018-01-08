@@ -8,7 +8,8 @@
           <div class="card__info-container__name-rating-container">
             <h1>{{ venue.name }}</h1>
             <div class="card__info-container__rating-container">
-              <p>{{ allVenues }}</p>
+              <p v-if="!venue.rating">-</p>
+              <p v-else>{{ venue.rating }}</p>
             </div>
           </div>
           <p class="card__info-container__address" v-if="venue.location.address">{{ venue.location.address }}, {{ venue.location.city }}</p>
@@ -33,7 +34,6 @@
       return {
         venues: '',
         place: '',
-        allVenues: '',
         error: ''
       }
     },
@@ -54,19 +54,18 @@
               lng = position.coords.longitude
               axios.get('https://api.foursquare.com/v2/venues/search?categoryId=4bf58dd8d48988d1e0931735&v=20131016&ll=' + lat + ',' + lng + '&radius=1000&client_id=O4N5MBHQWS11LRWBBO15JTZWFC42WKSUKTQYMXJ1ZN1CIPXD&client_secret=X1043GY3LH0W4S54GT0RWL300R2144W5WUVJKQ30GI0O1F03&v=20120609')
                 .then(res => {
-                  debugger
                   vm.venues = res.data.response.venues
 
                   vm.place = vm.venues.map(function(place) {
+                    console.log(place)
 
                     let venueID = place.id
 
                     axios.get('https://api.foursquare.com/v2/venues/' + venueID + '/?client_id=O4N5MBHQWS11LRWBBO15JTZWFC42WKSUKTQYMXJ1ZN1CIPXD&client_secret=X1043GY3LH0W4S54GT0RWL300R2144W5WUVJKQ30GI0O1F03&v=20120609')
                       .then(data => {
-                        debugger
-                        console.log(data)
-                        vm.allVenues = data.data.response.venue.rating
-                        console.log(vm.allVenues)
+
+                        place.rating = data.data.response.venue.rating
+                        console.log(place.rating)
                       })
                   })
 
