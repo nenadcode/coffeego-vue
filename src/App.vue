@@ -3,6 +3,7 @@
     <ul v-if="venues && venues.length">
       <div class="card" v-for="venue in venues">
         <div class="card__photo-container">
+          <img :src="venue.imgSrcValue">
         </div>
         <div class="card__info-container">
           <div class="card__info-container__name-rating-container">
@@ -14,7 +15,7 @@
           </div>
           <p class="card__info-container__address" v-if="venue.location.address">{{ venue.location.address }}, {{ venue.location.city }}</p>
           <p class="card__info-container__address" v-else>Address not available</p>
-          <p class="card__info-container__coffee-cold warning"></p>
+          <p class="card__info-container__coffee-cold"></p>
         </div>
       </div>
     </ul>
@@ -54,18 +55,23 @@
               lng = position.coords.longitude
               axios.get('https://api.foursquare.com/v2/venues/search?categoryId=4bf58dd8d48988d1e0931735&v=20131016&ll=' + lat + ',' + lng + '&radius=1000&client_id=O4N5MBHQWS11LRWBBO15JTZWFC42WKSUKTQYMXJ1ZN1CIPXD&client_secret=X1043GY3LH0W4S54GT0RWL300R2144W5WUVJKQ30GI0O1F03&v=20120609')
                 .then(res => {
-                  vm.venues = res.data.response.venues
+                  vm.venues = res.data.response.venues.map(v => ({
+                    ...v,
+                    imgSrcValue: ''
+                  }))
 
-                  vm.place = vm.venues.map(function(place) {
-                    console.log(place)
+                  vm.venues.map(function(place) {
 
                     let venueID = place.id
 
                     axios.get('https://api.foursquare.com/v2/venues/' + venueID + '/?client_id=O4N5MBHQWS11LRWBBO15JTZWFC42WKSUKTQYMXJ1ZN1CIPXD&client_secret=X1043GY3LH0W4S54GT0RWL300R2144W5WUVJKQ30GI0O1F03&v=20120609')
                       .then(data => {
-
                         place.rating = data.data.response.venue.rating
-                        console.log(place.rating)
+                        let rating = place.rating,
+                          venueHasPhoto = data.data.response.venue.hasOwnProperty('bestPhoto'),
+                          photo = data.data.response.venue.bestPhoto
+
+                          place.imgSrcValue = (venueHasPhoto) ? photo.prefix + '100x100' + photo.suffix : '/dist/no-image.jpg'
                       })
                   })
 
