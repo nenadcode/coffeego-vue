@@ -71,7 +71,7 @@
                           venueHasPhoto = data.data.response.venue.hasOwnProperty('bestPhoto'),
                           photo = data.data.response.venue.bestPhoto
 
-                          place.imgSrcValue = (venueHasPhoto) ? photo.prefix + '100x100' + photo.suffix : '/dist/no-image.jpg'
+                          place.imgSrcValue = (venueHasPhoto) ? photo.prefix + '100x100' + photo.suffix : 'src/assets/no-image.jpg'
                       })
                   })
 
