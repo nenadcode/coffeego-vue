@@ -1,0 +1,80 @@
+<template>
+  <div class="card__info-container">
+    <div class="card__info-container__name-rating-container">
+      <h1>{{ venue.name }}</h1>
+      <div class="card__info-container__rating-container">
+        <p v-if="!venue.rating">-</p>
+        <p v-else>{{ venue.rating }}</p>
+      </div>
+    </div>
+    <p class="card__info-container__address" v-if="venue.location.address">{{ venue.location.address }}, {{ venue.location.city }}</p>
+    <p class="card__info-container__address" v-else>Address not available</p>
+    <p class="card__info-container__coffee-cold"></p>
+  </div>
+</template>
+
+<script>
+  export default {
+    name: 'VenueInfo',
+    props: ['venue']
+  }
+</script>
+
+<style lang="scss">
+  .card {
+
+    &__info-container {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+
+      &__name-rating-container {
+        display: flex;
+        justify-content: space-between;
+
+        h1 {
+          font-size: 35px;
+          color: #2d5be3;
+          vertical-align: top;
+          margin: 0 10px 0 0;
+        }
+      }
+
+      &__rating-container {
+        display: flex;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background-color: green;
+        border-radius: 50%;
+
+        p {
+          margin-top: 0px;
+          margin-bottom: 0px;
+          align-self: center;
+          color: #fff;
+          font-size: 20px;
+        }
+      }
+
+      &__address {
+        font-size: 20px;
+        font-weight: bold;
+        text-transform: capitalize;
+        margin: 10px 0;
+      }
+
+      &__coffee-cold {
+        margin: 5px 0 10px 0;
+      }
+    }
+
+    .success {
+      color: green;
+    }
+
+    .warning {
+      color: red;
+    }
+  }
+</style>

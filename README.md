@@ -12,6 +12,12 @@ Place Foursquare rating
 Will the coffee get cold? Coffee will cool down if you walk more than 2km. Go!
 This project uses HTML5, SASS, Vuejs 2.
 
+Branch feature/first-version:
+App is fully functional with complete code in App.vue file only.
+
+Branch feature/second-version:
+App code is divided in components, better use of Axios.
+
 ## Build Setup
 
 ``` bash
